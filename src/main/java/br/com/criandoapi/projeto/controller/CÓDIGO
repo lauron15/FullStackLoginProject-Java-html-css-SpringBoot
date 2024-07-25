@@ -1,0 +1,106 @@
+/* Essa é a segunda maneira de fazer, antes de modificarmos com o DAO.
+
+package br.com.criandoapi.projeto.controller;
+
+import br.com.criandoapi.projeto.repository.IUsuario;
+import br.com.criandoapi.projeto.model.Usuario;
+import br.com.criandoapi.projeto.service.UsuarioService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@CrossOrigin("*")
+//significa que todas as entradas que vierem da maquina estarão liberadas
+@RequestMapping("/usuarios")
+public class UsuarioController {
+
+    @Autowired
+    private IUsuario dao;
+    //faz uma injeção automatica dos metodos,quando chamamos o dao dentro de um metodo, ele já vem com vários metodos, o que facilita a aplicação.
+
+    //No começo das aulas, fizemos com o dao, mas agora estamos atualizando para fazer com o usuarioService, para usar os padrões.
+    public UsuarioService usuarioService;
+
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Usuario>> ListaUsuarios() {
+        List<Usuario> lista = dao.findAll();
+        return ResponseEntity.status(200).body(lista);
+        //Esse novo metodo, faz a pesquisa no banco, retorna a lista, guarda a variavel, e no body retornamos a lista
+    }
+
+    @PostMapping //serve para criarmos um usuario novo
+    public ResponseEntity<Usuario> criarUsuario(@RequestBody Usuario usuario) {
+        Usuario usuarioNovo = dao.save(usuario);
+        return ResponseEntity.status(201).body(usuarioNovo);
+    }
+    //não estava funcionando, pois eu não tive colocado esse metodo de criar um usuario, assim não daria nunca.
+
+    @PutMapping
+    public ResponseEntity<Usuario> editarUsuario(@RequestBody Usuario usuario) {
+        Usuario usuarioNovo = dao.save(usuario);
+        return ResponseEntity.status(201).body(usuarioNovo);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> excluirUsuario(@PathVariable Integer id) {
+        dao.deleteById(id);
+        return ResponseEntity.status(204).build();
+    }
+}
+ */
+
+/*
+ */
+// Get = Select
+// Post = Create
+// Put = Update
+// Delete = Delete
+
+/*
+Código antes das modificações, 1ºmaneira >
+*
+@RestController
+@CrossOrigin("*")
+//significa que todas as entradas que vierem da maquina estarão liberadas
+@RequestMapping("/usuarios")
+public class UsuarioController {
+
+    @Autowired
+    private IUsuario dao;
+    //faz uma injeção automatica dos metodos,quando chamamos o dao dentro de um metodo, ele já vem com vários metodos, o que facilita a aplicação.
+
+    @GetMapping
+    public List<Usuario> ListaUsuarios() {
+        return (List<Usuario>) dao.findAll();
+    }
+    esse foi o primeiro modo que realziamos o projeto, agora iremos melhorá-lo e acrescentar validações.
+
+
+   @PostMapping //serve para criarmos um usuario novo
+    public Usuario criarUsuario(@RequestBody Usuario usuario) {
+        Usuario usuarioNovo = dao.save(usuario);
+        return usuarioNovo;
+    }
+
+    @PutMapping //serve para editar um usuario existente e atualizar o banco de dados com ele, mas sem deletar o usuário que ele era anteriormente.
+    public Usuario editarUsuario(@RequestBody Usuario usuario) {
+        Usuario usuarioNovo = dao.save(usuario);
+        return usuarioNovo;
+    }
+
+    @DeleteMapping ("/{id}")//irá servir para deletar um usuário existente
+    public Optional<Usuario> excluirUsuario(@PathVariable Integer id){
+        Optional<Usuario> usuario = dao.findById(id);
+        dao.deleteById(id);
+        return usuario;
+        }
+       }
+*
+* */
