@@ -8,6 +8,7 @@ import br.com.criandoapi.projeto.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -37,12 +38,8 @@ public class UsuarioController {
     }
 
     @PostMapping //serve para criarmos um usuario novo
-    public ResponseEntity<Token> criarUsuario(@Valid @RequestBody UsuarioDto usuario) {
-        Token token = usuarioService.gerarToken(usuario);
-        if (token != null) {
-            return ResponseEntity.ok(token);
-        }
-        return ResponseEntity.status(403).build();
+    public ResponseEntity<Usuario> criarUsuario(@Valid @RequestBody Usuario usuario) {
+        return ResponseEntity.status(201).body(usuarioService.criarUsuario(usuario));
     }
     //não estava funcionando, pois eu não tive colocado esse metodo de criar um usuario, assim não daria nunca.
 
@@ -58,12 +55,12 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Usuario> validarSenha(@Valid @RequestBody Usuario usuario) {
-        Boolean valid = usuarioService.validarSenha(usuario);
-        if (!valid) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<Token> validarSenha(@Valid @RequestBody UsuarioDto usuario) {
+        Token token = usuarioService.gerarToken(usuario);
+        if (token != null) {
+            return ResponseEntity.ok(token);
         }
-        return ResponseEntity.status(200).build();
+        return ResponseEntity.status(403).build();
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
